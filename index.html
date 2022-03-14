@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incremental Game</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <h1>Starters</h1>
+    <div id="starter-selection">
+        <p>Pick one of the following:</p>
+        <ol>
+            <li><button onclick="StarterChosen(this)" class="btn">Botamon</button></li>
+            <li><button onclick="StarterChosen(this)" class="btn">Punimon</button></li>
+            <li><button onclick="StarterChosen(this)" class="btn">Nyokimon</button></li>
+            <li><button onclick="StarterChosen(this)" class="btn">Yuramon</button></li>
+            <li><button onclick="StarterChosen(this)" class="btn">Pabumon</button></li>
+            <li><button onclick="StarterChosen(this)" class="btn">Pitchmon</button></li>
+        </ol>
+    </div>
+    <div id="main-info">
+        <button onclick="EvolveDigimon()" class="btn" id="evolve-button" hidden>Evolve</button>
+    </div>
+    <script src="javascript/exp_tables.js"></script>
+    <script src="javascript/digimon.js"></script>
+    <script src="javascript/app.js"></script>
+    <noscript>This website needs java to run</noscript>
+</body>
+</html>
