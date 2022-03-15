@@ -1,15 +1,16 @@
 'use strict'
 
 /*
- Reborns Max Level increase:
- Baby 1: +100
- Baby 2: +90
- Child: +80
- Adult: +60
- Perfect: +40
- Ultimate: +20
- Ultimate 2: +10
-*/
+Reborns Max Level increase:
+Baby 1: +100
+Baby 2: +90
+Child: +80
+Adult: +60
+Perfect: +40
+Ultimate: +20
+Ultimate 2: +10
+ */
+const HIGHEST_LEVEL = 99
 
 const createPlayer = () => {
     var bits = 1000,
@@ -34,36 +35,50 @@ const digimon = (_digimon, _id) => {
         expNextLevel = EXP_TABLE[_digimon.exp_growth][level - 1],
         maxLevel = _digimon.max_level;
 
+    function canEvolve() {
+        var evolutions = DIGIMON_DATABASE[id].evolutions
+
+        for (var i = 0; i < evolutions.length; i++) {
+            if (evolutionRequirementsFulfilled(evolutions[i]))
+                return true;
+        }
+
+        return false;
+    }
+
+    function evolutionRequirementsFulfilled(evolution) {
+        if (evolution.level > level)
+            return false;
+
+        // Add new evolution conditions here
+
+        return true;
+    }
+
     const digimon_info = {
         increaseExperience: (_amount) => {
             if (expNextLevel > 0) {
                 expNextLevel -= _amount;
                 while (expNextLevel <= 0) {
                     level++
-                    // TODO: Replace 99 with MAX_LEVEL
-                    if (level == maxLevel || level == 99) {
-                        expNextLevel = -1
-                        break
+                    if (level == maxLevel) {
+                        expNextLevel = -1;
+                        break;
+                    } else {
+                        expNextLevel += EXP_TABLE[_digimon.exp_growth][level - 1];
                     }
-                    else {
-                        expNextLevel += EXP_TABLE[_digimon.exp_growth][level - 1]
 
-                        // TODO: Change this to account for multiple evolutions and item evolutions (maybe add a checkEvolution() function)
-                        if(DIGIMON_DATABASE[id].evolutions && DIGIMON_DATABASE[id].evolutions[0].level <= level){
-                            document.getElementById('evolve-button').hidden = false;
-                        }
+                    if (canEvolve()) {
+                        document.getElementById('evolve-button').hidden = false;
                     }
                 }
             }
         }
-
         , getDisplayInfo: () => {
-            return name + "<br>Level " + level + "<br>Next Level: " + expNextLevel
+            return name + "<br>Level " + level + "<br>Next Level: " + (expNextLevel == -1 ? "---" : expNextLevel);
         }
-
-        // TODO: Change this to account for multiple evolutions
-        , evolve: () => {
-            id = DIGIMON_DATABASE.findIndex(v => v.dataname == DIGIMON_DATABASE[id].evolutions[0].evolvesTo)
+        , evolve: (evolutionSelected) => {
+            id = DIGIMON_DATABASE.findIndex(v => v.dataname == DIGIMON_DATABASE[id].evolutions[evolutionSelected].evolvesTo)
             var evolution = DIGIMON_DATABASE[id];
             name = evolution.names.japanese;
             level = 1;
@@ -76,15 +91,17 @@ const digimon = (_digimon, _id) => {
     return digimon_info
 }
 
-const player = createPlayer()
+///////////////////////////////////////////////////
+// Main Code
 
-const buttons = document.querySelectorAll('.btn')
+const player = createPlayer()
 
 function StarterChosen(starter) {
     document.getElementById('starter-selection').innerHTML = starter.innerHTML + " chosen!";
     var digimonId = DIGIMON_DATABASE.findIndex(v => v.dataname == starter.innerHTML);
     player.setStarter(digimon(DIGIMON_DATABASE[digimonId], digimonId));
 
+    // TODO: Change the code here to not use setInterval (Less control as to how often it should happen)
     setInterval(() => {
         player.getMainDigimon().increaseExperience(100);
         // player.gainMoney(100);
@@ -94,6 +111,7 @@ function StarterChosen(starter) {
 }
 
 function EvolveDigimon() {
-    player.getMainDigimon().evolve()
+    // TODO: Change this to account for multiple evolutions
+    player.getMainDigimon().evolve(0)
     document.getElementById('starter-selection').innerHTML = `${player.getMainDigimon().getDisplayInfo()}`;
 }
