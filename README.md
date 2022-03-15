@@ -1,4 +1,4 @@
-# Digital-Tamer
+# Digimon-Idle-Tamer
 Idle web game where you can get, train, evolve and battle Digimon
 
 # Disclaimer
